@@ -2,6 +2,7 @@ require 'logger'
 require 'stringio'
 require 'singleton'
 require 'pathname'
+require 'active_support'
 require 'active_record/connection_adapters/abstract_adapter'
 require 'nulldb/core'
 
@@ -80,6 +81,10 @@ class ActiveRecord::ConnectionAdapters::NullDBAdapter <
   class NullObject
     def method_missing(*args, &block)
       nil
+    end
+
+    def to_a
+      []
     end
   end
 
@@ -191,6 +196,14 @@ class ActiveRecord::ConnectionAdapters::NullDBAdapter <
       index_columns = quoted_columns_for_index(column_names, options).join(", ")
 
       [index_name, index_type, index_columns]
+    end
+  end
+
+  unless instance_methods.include? :index_name_exists?
+    def index_name_exists?(table_name, index_name, default)
+      return default unless respond_to?(:indexes)
+      index_name = index_name.to_s
+      indexes(table_name).detect { |i| i.name == index_name }
     end
   end
 
