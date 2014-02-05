@@ -71,7 +71,7 @@ describe "NullDB" do
     ActiveRecord::Migration.verbose = false
     ActiveRecord::Schema.define do
       create_table(:employees) do |t|
-        t.string  :name
+        t.string  :name, :null => false, :limit => 50
         t.date    :hire_date
         t.integer :employee_number
         t.decimal :salary
@@ -112,6 +112,18 @@ describe "NullDB" do
     should_have_column(Employee, :hire_date, :date)
     should_have_column(Employee, :employee_number, :integer)
     should_have_column(Employee, :salary, :decimal)
+  end
+
+  it 'should have limit on name' do
+    Employee.columns_hash['name'].limit.should == 50
+  end
+
+  it "should return true on nullable field" do
+    Employee.columns_hash['salary'].null.should == true
+  end
+
+  it "should return false on non-nullable field" do
+    Employee.columns_hash['name'].null.should == false
   end
 
   it "should return the appropriate primary key" do
@@ -250,7 +262,6 @@ describe "NullDB" do
     col.should_not be_nil
     col.type.should == col_type
   end
-
 
   it "should support adding indexes" do
     Employee.connection.indexes('employees').size.should == 2
