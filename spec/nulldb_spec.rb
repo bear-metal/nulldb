@@ -1,9 +1,9 @@
 require 'rubygems'
 
-# Use Coveralls/SimpleCov when available
+# Optional simplecov loading
 begin
-  require 'coveralls'
-  Coveralls.wear!
+  require 'simplecov'
+  SimpleCov.start
 rescue LoadError
 end
 
