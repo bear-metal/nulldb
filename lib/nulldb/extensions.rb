@@ -29,13 +29,3 @@ class ActiveRecord::Base
     ActiveRecord::ConnectionAdapters::NullDBAdapter.new(config)
   end
 end
-
-
-module ActiveRecord
-  # Just make sure you have the latest version of your schema
-  class Schema < Migration
-    def self.define(info={}, &block)
-      instance_eval(&block)
-    end
-  end
-end
